@@ -1,111 +1,81 @@
-# Docker学習ハンズオン教材
+# Step 2: Docker Composeを使う
 
-Docker初心者向けの実践的な学習教材です。
-実際に動くWebアプリケーションを通して、Dockerの基本概念と使い方を学びます。
+## 🎯 このステップの目標
 
-## 🎯 学習目標
+Docker Composeを使って、フロントエンドとバックエンドを同時に管理しましょう！
 
-この教材を完了すると、以下ができるようになります：
+## 📝 課題
 
-- Docker / Docker Compose を使ってローカル開発環境を構築できる
-- 複数コンテナ（フロントエンド・バックエンド・DB）を連携させて起動できる
-- Dockerfile と docker-compose.yml の役割を説明できる
-- コンテナとホスト環境の違いを理解して説明できる
-- 「なぜDockerを使うのか」を自分の言葉で説明できる
+### 課題1: `docker-compose.yml` を作成してください
 
-## 🏗️ 構築するシステム
+プロジェクトルートに `docker-compose.yml` を作成してください：
 
-シンプルなタスク管理アプリケーションを構築します：
+```yaml
+version: '3.8'
 
+services:
+  # フロントエンド (React)
+  frontend:
+    # ヒント: build: ./frontend
+    # ヒント: ports: - "3000:3000"
+    # ヒント: environment: - REACT_APP_API_URL=http://localhost:8000
+    # ヒント: depends_on: - backend
+
+  # バックエンド (Node.js + Express)  
+  backend:
+    # ヒント: build: ./backend
+    # ヒント: ports: - "8000:8000"
 ```
-[ Browser ]
-     ↓
-[ Frontend (React + TypeScript) ]  ← ポート 3000
-     ↓
-[ Backend (Node.js + Express) ]    ← ポート 8000
-     ↓
-[ Database (MySQL) ]               ← ポート 3306
+
+### 課題2: `frontend/Dockerfile` を作成してください
+
+```dockerfile
+# ベースイメージを指定
+# ヒント: FROM node:18-alpine
+
+# 作業ディレクトリを設定
+# ヒント: WORKDIR /app
+
+# package.jsonをコピーして依存関係をインストール
+# ヒント: COPY package*.json ./
+# ヒント: RUN npm install
+
+# ソースコードをコピー
+# ヒント: COPY . .
+
+# ポート3000を公開
+# ヒント: EXPOSE 3000
+
+# 開発サーバーを起動
+# ヒント: CMD ["npm", "start"]
 ```
 
-## 📚 学習ステップ
-
-### [Step 0: 事前知識](docs/step0-overview.md)
-- Dockerとは何か
-- コンテナとホスト環境の違い
-- 今回構築するシステムの全体像
-
-### [Step 1: バックエンドをDockerで動かす](docs/step1-backend.md)
-- Node.js用のDockerfileを作成
-- `docker build` / `docker run` でコンテナ起動
-- ブラウザからAPIにアクセス確認
-
-### [Step 2: Docker Composeを使う](docs/step2-compose.md)
-- docker-compose.ymlを作成
-- フロントエンドとバックエンドを同時起動
-- コンテナ間通信の設定
-
-### [Step 3: データベースを追加する](docs/step3-database.md)
-- MySQLコンテナを追加
-- ボリュームでデータ永続化
-- 3層構成の完成
-
-## 🚀 クイックスタート（完成版）
+### 課題3: アプリケーションを起動してください
 
 ```bash
-# リポジトリをクローン
-git clone <repository-url>
-cd docker-web-handson
-
-# 全サービスを起動
-docker compose up -d
-
-# ブラウザでアクセス
-open http://localhost:3000
+docker compose up --build
 ```
 
-## 📋 前提条件
+### 課題4: 動作確認してください
 
-- Docker Desktop がインストール済み
-- Git がインストール済み
-- ブラウザ（Chrome, Firefox, Safari など）
+ブラウザで以下にアクセス：
+- **フロントエンド**: http://localhost:3000
+- **バックエンド**: http://localhost:8000
 
-## 🔧 各ステップでの学習方法
+## 🎉 成功の証拠
 
-1. 対応するブランチをチェックアウト
-   ```bash
-   git checkout exercise/step-1
-   ```
+- フロントエンドでタスク管理画面が表示される
+- 初期データとして2つのサンプルタスクが表示される
+- 新しいタスクを追加できる（ダミーデータとして保存される）
 
-2. ステップのドキュメントを読む
-   ```bash
-   open docs/step1-backend.md
-   ```
+## 📚 詳細な説明
 
-3. 課題に取り組む（ヒントはコメントに記載）
+詳しい手順は [docs/step2-compose.md](docs/step2-compose.md) を参照してください。
 
-4. 動作確認を行う
+## 🚀 次のステップ
 
-## 🆘 トラブルシューティング
-
-### よくある問題
-
-- **ポートが使用中**: `docker compose down` で停止してから再実行
-- **イメージが古い**: `docker compose build --no-cache` で再ビルド
-- **データが消えた**: ボリューム設定を確認
-
-### 完全リセット
+完了したら以下のコマンドで次のステップに進んでください：
 
 ```bash
-# 全コンテナ・イメージ・ボリュームを削除
-docker compose down -v
-docker system prune -a
+git checkout exercise/step-3
 ```
-
-## 📖 参考資料
-
-- [Docker公式ドキュメント](https://docs.docker.com/)
-- [Docker Compose公式ドキュメント](https://docs.docker.com/compose/)
-
----
-
-**🎉 楽しく学習して、Dockerマスターを目指しましょう！**
