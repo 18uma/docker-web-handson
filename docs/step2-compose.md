@@ -301,6 +301,7 @@ docker compose exec frontend sh
 - バックエンドが起動していない
 - ポート設定が間違っている
 - 環境変数の設定が間違っている
+- **depends_onが設定されていない**
 
 **対処法**:
 ```bash
@@ -309,7 +310,13 @@ docker compose logs backend
 
 # 環境変数を確認
 docker compose config
+
+# depends_onが設定されているか確認
 ```
+
+**depends_onの重要性:**
+- なし: フロントエンドが先に起動し、APIエラー発生
+- あり: バックエンドの起動後にフロントエンドが起動
 
 ### 失敗2: ポートが使用中エラー
 
