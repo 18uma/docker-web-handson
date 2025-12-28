@@ -161,10 +161,19 @@ docker run -p 3000:8000 task-api
 ```
 → http://localhost:3000 でアクセスしてしまう
 
+**失敗例3: ポートが使用中エラー**
+```bash
+# エラー: port is already allocated
+docker run -p 8000:8000 task-api
+```
+→ 他のアプリが8000番ポートを使用中
+
 **正解:**
 ```bash
 # ✅ 正しい
 docker run -p 8000:8000 task-api
+# またはポート競合時は
+docker run -p 8001:8000 task-api
 ```
 
 ---
