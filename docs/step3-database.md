@@ -286,12 +286,42 @@ docker compose restart backend
 **原因**: 
 - init.sqlファイルのパスが間違っている
 - SQLの構文エラー
+- **ボリュームマウントが正しく設定されていない**
 
 **対処法**:
 ```bash
 # ボリュームを削除して完全に再作成
 docker compose down -v
 docker compose up --build
+
+# init.sqlのパスを確認
+# 正: ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+# 誤: ./init.sql:/docker-entrypoint-initdb.d/init.sql
+```
+
+### 失敗3: ボリューム関連エラー
+
+**症状**: `volume "mysql_data" not found` エラー
+
+**原因**: volumesセクションが定義されていない
+
+**対処法**:
+```yaml
+# docker-compose.ymlの最後に追加
+volumes:
+  mysql_data:  # この定義が必要！
+```
+
+**ボリュームのデバッグコマンド:**
+```bash
+# ボリューム一覧確認
+docker volume ls
+
+# ボリュームの詳細確認
+docker volume inspect docker-web-handson_mysql_data
+
+# ボリュームを削除（データも削除される）
+docker compose down -v
 ```
 
 ### 失敗3: ポート競合エラー
